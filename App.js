@@ -1,77 +1,51 @@
 import * as React from 'react';
-import { Button, View, Text } from 'react-native';
+import { Text, StatusBar, Button, StyleSheet, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-function HomeScreen({ navigation }) {
+function Screen1({ navigation }) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#6a51ae' }]}>
+      <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
+      <Text style={{ color: '#fff' }}>Light Screen</Text>
       <Button
-        title="Go to Details"
-        onPress={() => {
-          /* 1. Navigate to the Details route with params */
-          navigation.navigate('Details', {
-            itemId: 86,
-            otherParam: 'anything you want here',
-          });
-        }}
+        title="Next screen"
+        onPress={() => navigation.navigate('Screen2')}
+        color="#fff"
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
-function DetailsScreen({ route, navigation }) {
-  /* 2. Get the param */
-  const { itemId, otherParam } = route.params;
+function Screen2({ navigation }) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
-      <Text>itemId: {JSON.stringify(itemId)}</Text>
-      <Text>otherParam: {JSON.stringify(otherParam)}</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#ecf0f1' }]}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ecf0f1" />
+      <Text>Dark Screen</Text>
       <Button
-        title="Go to Details... again"
-        onPress={() =>
-          navigation.push('Details', {
-            itemId: Math.floor(Math.random() * 100),
-            otherParam: "Hi :)"
-          })
-        }
+        title="Next screen"
+        onPress={() => navigation.navigate('Screen1')}
       />
-      <Button
-        title="Update the title"
-        onPress={() => navigation.setOptions({ title: 'Updated!' })}
-      />
-      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
-      <Button title="Go back" onPress={() => navigation.goBack()} />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const Stack = createStackNavigator();
 
-function App() {
+export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-       <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: 'My home',
-          headerStyle: {
-            backgroundColor: '#f4511e',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
-      />
-        <Stack.Screen name="Details" component={DetailsScreen}  options={({ route }) => ({ title: route.params.name })} initialParams={{ itemId: 42 }} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator headerMode="none">
+          <Stack.Screen name="Screen1" component={Screen1} />
+          <Stack.Screen name="Screen2" component={Screen2} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 
-export default App;
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+});
